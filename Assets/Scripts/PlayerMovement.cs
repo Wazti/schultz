@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Input Values")]
     public float moveInput;
-    public Vector2 lookDirection;
+    public float lookDirection;
 
     [Header("Stats")]
     public float moveSpeed;
@@ -48,14 +48,14 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move(float input, bool isActive){
         moveInput = input;
+       // Debug.Log(moveInput + " "+ moveSpeed + " "+ _speedMultiplier);
         _isActive = isActive;
     }
 
     private void FixedUpdate()
     {
         //Movement
-        _rigidbody.velocity = new Vector2(moveInput * moveSpeed * _speedMultiplier, _rigidbody.velocity.y);
-        Debug.Log(moveInput + " "+ moveSpeed + " "+ _speedMultiplier);
+        _rigidbody.velocity = new Vector2(Mathf.Sign(lookDirection) * moveSpeed * _speedMultiplier, _rigidbody.velocity.y);
         //_rigidbody.MovePosition(moveInput.x * moveSpeed * _speedMultiplier, moveInput.y * moveSpeed * _speedMultiplier);
 
         ////Rotation

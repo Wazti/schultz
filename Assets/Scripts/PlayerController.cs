@@ -2,7 +2,7 @@
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public enum PlayerState { Idle, Walk, Shoot, Death, Dash, Hit };
+public enum PlayerState { Idle, Walk, Shoot, Death, Dash, Hit, Jump, Fall };
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -23,10 +23,8 @@ public class PlayerController : MonoBehaviour
         set
         {
             _moveDirection = value;
-            //LookDirection = value;
-
-            //_animator.MoveDirection = value;
-
+            LookDirection = value;
+            _animator.MoveDirection = value;
             _movement.Move(value, PlayerState != PlayerState.Dash);
 
             if (value == 0)
@@ -41,8 +39,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    [SerializeField] private Vector2 _lookDirection;
-    private Vector2 LookDirection
+    [SerializeField] private float _lookDirection;
+    private float LookDirection
     {
         get
         {
@@ -50,10 +48,12 @@ public class PlayerController : MonoBehaviour
         }
         set
         {
-            if (value != Vector2.zero)
+            if (value != 0)
             {
                 _lookDirection = value;
-                _animator.LookDirection = LookDirection;
+                _spriteRender.flipX = value < 0;
+                _movement.lookDirection = value;
+                //_animator.LookDirection = LookDirection;
             }
         }
     }
@@ -89,23 +89,24 @@ public class PlayerController : MonoBehaviour
         set
         {
             _playerState = value;
-            //_animator.PlayerState = value;
+            _animator.PlayerState = value;
         }
     }
 
     [Header("Scripts")]
     public Rigidbody2D _rigidbody;
+    private SpriteRenderer _spriteRender;
     private Transform _transform;
     private PlayerMovement _movement;
-    private PlayerJump _jump;
+    public PlayerJump _jump;
     private PlayerAnimator _animator;
 
     private void Awake()
     {
         _camera = Camera.main;
         _transform = transform;
+        _spriteRender = GetComponent<SpriteRenderer>();
         _rigidbody = GetComponent<Rigidbody2D>();
-        _jump = GetComponent<PlayerJump>();
         _movement = GetComponent<PlayerMovement>();
         _animator = GetComponent<PlayerAnimator>();
     }
@@ -139,7 +140,11 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
+        PlayerState = PlayerState.Jump;
         _jump.Jump();
+    }
+    public void OnJumpFinished() {
+        PlayerState = PlayerState.Idle;
     }
     public void Hit()
 	{

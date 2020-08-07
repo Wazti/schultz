@@ -12,12 +12,13 @@ public class PlayerAnimator : CharAnimator
         }
         set
         {
-
             _playerState = value;
             if(value != PlayerState.Death)
 			{
                 _animator.SetTrigger(value.ToString());
+                
             }
+            Debug.Log(_playerState);
         }
     }
 }

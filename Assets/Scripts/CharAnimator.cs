@@ -20,8 +20,8 @@ public class CharAnimator : MonoBehaviour
             _animator.SetFloat("Look Y", value.y);
         }
     }
-    [SerializeField] protected Vector2 _moveDirection;
-    public Vector2 MoveDirection
+    [SerializeField] protected float _moveDirection;
+    public float MoveDirection
     {
         get
         {
@@ -30,8 +30,7 @@ public class CharAnimator : MonoBehaviour
         set
         {
             _moveDirection = value;
-            _animator.SetFloat("Move X", value.x);
-            _animator.SetFloat("Move Y", value.y);
+            _animator.SetFloat("HorizontalDirection", value);
         }
     }
 
